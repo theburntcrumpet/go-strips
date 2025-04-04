@@ -25,15 +25,4 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	comic, err := service.CbzComicParser{}.ParseComic("bobby_make_believe_sample.cbz")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(comic.Filename)
-	for _, page := range comic.Pages {
-		fmt.Println(page.Filename)
-		// print last 10 bytes of the page
-		fmt.Println(page.Data[len(page.Data)-10:])
-	}
 }
