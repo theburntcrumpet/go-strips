@@ -8,6 +8,7 @@ type Comic struct {
 	Filename        string `gorm:"uniqueIndex"`
 	PreviewImageKey string
 	Progress        int
+	TotalPages      int
 	LastOpenedTime  string
 	CreatedTime     string
 	UpdatedTime     string

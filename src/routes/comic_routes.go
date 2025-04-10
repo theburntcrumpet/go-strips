@@ -16,4 +16,7 @@ func RegisterComicRoutes(router *gin.RouterGroup, comicService service.ComicServ
 	router.GET("/comics/preview/:uuid", func(c *gin.Context) {
 		controllers.GetPreviewImage(c, comicService)
 	})
+	router.GET("/comics/:id", func(c *gin.Context) {
+		controllers.GetComicWithId(c, comicService)
+	})
 }

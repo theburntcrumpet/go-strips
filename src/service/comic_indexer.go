@@ -40,7 +40,7 @@ func (ci *ComicIndexerImpl) indexComic(path string) error {
 	}
 	os.MkdirAll(ci.conf.AppDataDirectory+"/previews", os.ModePerm)
 
-	previewKey, err := ci.writePreviewImage(path)
+	previewKey, pages, err := ci.writePreviewImage(path)
 	if err != nil {
 		return err
 	}
@@ -50,6 +50,7 @@ func (ci *ComicIndexerImpl) indexComic(path string) error {
 		PreviewImageKey: previewKey,
 		LastOpenedTime:  time.Now().Format(time.RFC3339),
 		CreatedTime:     time.Now().Format(time.RFC3339),
+		TotalPages:      pages,
 	}
 	ci.db.Create(comic)
 	return nil
@@ -80,20 +81,20 @@ func (ci *ComicIndexerImpl) IndexComicsAtPath(path string) error {
 	return nil
 }
 
-func (ci *ComicIndexerImpl) writePreviewImage(path string) (string, error) {
+func (ci *ComicIndexerImpl) writePreviewImage(path string) (string, int, error) {
 	parser := ci.cbzParser
 	comic, err := parser.ParseComic(path)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 	if len(comic.Pages) == 0 {
-		return "", nil
+		return "", 0, nil
 	}
 	uuidStr := uuid.NewString()
 	previewPath := ci.conf.AppDataDirectory + "/previews/" + uuidStr + ".jpg"
 	err = os.WriteFile(previewPath, comic.Pages[0].Data, 0644)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
-	return uuidStr, nil
+	return uuidStr, len(comic.Pages), nil
 }

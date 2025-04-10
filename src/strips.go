@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/theburntcrumpet/go-strip/src/config"
 	"github.com/theburntcrumpet/go-strip/src/database"
@@ -35,6 +36,13 @@ func main() {
 	}
 	comicParser := &service.CbzComicParser{}
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"}, // Replace with your React app's URL
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 	routes.RegisterComicRoutes(router.Group("/api"), comicService, comicParser)
 	router.Run()
 }

@@ -100,3 +100,21 @@ func GetPreviewImage(c *gin.Context, comicService service.ComicService) {
 
 	c.Data(http.StatusOK, "image/jpeg", image)
 }
+
+func GetComicWithId(c *gin.Context, comicService service.ComicService) {
+	// Get the comic ID from the URL parameter
+	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Comic ID is required"})
+		return
+	}
+
+	// Get the comic from the service
+	comic, err := comicService.GetComicWithId(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get comic"})
+		return
+	}
+
+	c.JSON(http.StatusOK, comic)
+}
